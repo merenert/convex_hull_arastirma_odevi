@@ -1,6 +1,6 @@
 # Konveks Zar Algoritmaları: Kapsamlı Bir İnceleme
 
-Bu belge, hesaplamalı geometrinin temel problemlerinden biri olan konveks zar (convex hull) problemini ve bu problemi çözmek için geliştirilmiş başlıca algoritmaları ayrıntılı bir şekilde ele almaktadır. Konveks zar, verilen bir nokta kümesini içeren en küçük dışbükey (konveks) çokgen olarak tanımlanır ve bilgisayar grafikleri, görüntü işleme, örüntü tanıma, coğrafi bilgi sistemleri (CBS) ve robotik gibi birçok alanda önemli uygulamalara sahiptir.
+Bu belge, hesaplamalı geometrinin temel problemlerinden biri olan konveks zar (convex hull) problemini ve bu problemi çözmek için geliştirilmiş başlıca algoritmaları ve bu algoritmalardan biri olan Graham Scan algoritmasının detaylı incelenmesini içermektedir. Konveks zar, verilen bir nokta kümesini içeren en küçük dışbükey (konveks) çokgen olarak tanımlanır ve bilgisayar grafikleri, görüntü işleme, örüntü tanıma, coğrafi bilgi sistemleri (CBS) ve robotik gibi birçok alanda önemli uygulamalara sahiptir.
 
 ## Konveks Zar Probleminin Tanımı
 
@@ -71,18 +71,12 @@ Bir noktanın içerde/dışarda olup olmadığını kontrol etmek ve gerekirse z
 | Graham Scan        | $O(n \\log n)$                | $O(n \\log n)$               | Sıralama gerektirir, yığın kullanır          |
 | QuickHull          | $O(n \\log n)$                | $O(n^2)$                     | Pratikte hızlı, Quicksort benzeri            |
 | Divide & Conquer   | $O(n \\log n)$                | $O(n \\log n)$               | Klasik böl ve fethet                         |
-| Monotone Chain     | $O(n \\log n)$                | $O(n \\log n)$               | Açı hesaplamaz, x-sıralaması kullanır      |
+| Monotone Chain     | $O(n \\log n)$                | $O(n \\log n)$               | Açı hesaplamaz, x-sıralaması kullanır        |
 | Incremental        | $O(n \\log n)$                | $O(n \\log n)$               | Noktaları aşamalı ekler                      |
 
 *n: toplam nokta sayısı, h: konveks zar üzerindeki nokta sayısı*
 
 Konveks zar algoritması seçimi, uygulamanın özel gereksinimlerine ve veri kümesinin özelliklerine bağlıdır. Genel olarak, $O(n \\log n)$ karmaşıklığına sahip algoritmalar (Graham Scan, Monotone Chain, Divide & Conquer, Incremental) büyük veri kümeleri için daha uygun kabul edilir. Gift Wrapping, zar üzerindeki nokta sayısının az olması beklenen durumlar için iyi bir seçenek olabilir. QuickHull, ortalama performansı iyi olmasına rağmen en kötü durum karmaşıklığına dikkat edilmelidir. Brute force ise genellikle sadece küçük $n$ değerleri için veya eğitim amaçlı kullanılır.
-
-## Kaynakça
-
-*   Akgül, B., & Kutucu, H. (2015). Convex Hull Problemine Genel Bakış: Algoritmalar ve Karmaşıklıkları. Akademik Bilişim 2015. [https://ab.org.tr/ab15/kitap/473.pdf](https://ab.org.tr/ab15/kitap/473.pdf)
-
-
 
 
 
@@ -177,7 +171,7 @@ Graham Scan algoritmasının (ve genel olarak konveks zar algoritmalarının) ç
 
 
 
-## Graham Scan Algoritması İçin Ek Kaynakça
+## Kaynakça
 
 Graham Scan algoritması ve konveks zarlar hakkında daha fazla bilgi için aşağıdaki kaynaklara başvurulabilir:
 
