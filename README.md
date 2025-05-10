@@ -1,5 +1,3 @@
-# convex_hull_arastirma_odevi
-
 # Konveks Zar Algoritmaları: Kapsamlı Bir İnceleme
 
 Bu belge, hesaplamalı geometrinin temel problemlerinden biri olan konveks zar (convex hull) problemini ve bu problemi çözmek için geliştirilmiş başlıca algoritmaları ayrıntılı bir şekilde ele almaktadır. Konveks zar, verilen bir nokta kümesini içeren en küçük dışbükey (konveks) çokgen olarak tanımlanır ve bilgisayar grafikleri, görüntü işleme, örüntü tanıma, coğrafi bilgi sistemleri (CBS) ve robotik gibi birçok alanda önemli uygulamalara sahiptir.
@@ -83,5 +81,110 @@ Konveks zar algoritması seçimi, uygulamanın özel gereksinimlerine ve veri k�
 ## Kaynakça
 
 *   Akgül, B., & Kutucu, H. (2015). Convex Hull Problemine Genel Bakış: Algoritmalar ve Karmaşıklıkları. Akademik Bilişim 2015. [https://ab.org.tr/ab15/kitap/473.pdf](https://ab.org.tr/ab15/kitap/473.pdf)
+
+
+
+
+
+## Graham Scan Algoritması Detaylı İncelemesi
+
+Graham Scan, 1972 yılında Ronald Graham tarafından geliştirilen (Graham, 1972) ve bir nokta kümesinin konveks zarını bulan bir algoritmadır. Genellikle verimli ve anlaşılır bir yöntem olarak kabul edilir.
+
+### Çalışma Mantığı ve Prensipleri
+
+Graham Scan algoritmasının temel mantığı, verilen noktaları belirli bir referans noktasına göre sıralamak ve ardından bu sıralı noktaları bir yığın (stack) veri yapısı kullanarak işleyerek konveks zarın köşelerini belirlemektir. Algoritma, en dıştaki noktaları bularak ve içbükey (concave) olabilecek noktaları eleyerek çalışır.
+
+Ana prensip, bir başlangıç noktasından başlayarak noktaları polar açılarına göre sıralamak ve ardından bu sıralı noktalar arasında "sola dönüş" yapanları (veya saat yönünün tersine dönüş) koruyup "sağa dönüş" yapanları (veya saat yönünde dönüş) eleyerek konveks bir poligon oluşturmaktır.
+
+### Algoritmanın Adımları
+
+Graham Scan algoritması temel olarak aşağıdaki adımları izler:
+
+1.  **Başlangıç Noktasını Bulma (Pivot Seçimi):**
+    İlk adım, verilen tüm noktalar arasından bir başlangıç noktası (pivot) seçmektir. Genellikle en düşük y koordinatına sahip nokta seçilir. Eğer birden fazla nokta aynı en düşük y koordinatına sahipse, bu noktalar arasından en soldaki (en düşük x koordinatına sahip) nokta pivot olarak seçilir. Bu nokta kesinlikle konveks zarın bir parçası olacaktır.
+
+2.  **Noktaları Sıralama:**
+    Pivot noktası belirlendikten sonra, geri kalan tüm noktalar bu pivot noktasına göre polar açılarına göre artan sırada sıralanır. Eğer iki noktanın polar açısı aynı ise, pivot noktasına daha yakın olan nokta önce gelir. Bu sıralama, noktaların saat yönünün tersine bir düzen oluşturmasını sağlar.
+
+3.  **Konveks Zarı Oluşturma (Yığın Kullanımı):**
+    Sıralanmış noktalar kullanılarak konveks zar oluşturulur. Bu aşamada bir yığın (stack) veri yapısı kullanılır.
+    *   İlk olarak, pivot noktası ve sıralanmış listedeki ilk nokta yığına eklenir.
+    *   Daha sonra, sıralanmış listedeki bir sonraki nokta (mevcut nokta) alınır ve yığındaki en üstteki iki nokta (Top ve Next-to-Top) ile birlikte değerlendirilir.
+    *   Bu üç nokta (Next-to-Top, Top ve mevcut nokta) bir doğru parçası oluşturur. Bu doğru parçasının yönelimi kontrol edilir:
+        *   Eğer bu üç nokta **sola dönüş** (counter-clockwise turn) yapıyorsa, bu mevcut noktanın konveks zarın bir parçası olabileceği anlamına gelir. Mevcut nokta yığına eklenir.
+        *   Eğer bu üç nokta **sağa dönüş** (clockwise turn) yapıyorsa, yığının en üstündeki nokta (Top) konveks zarın bir parçası olamaz (çünkü içbükey bir köşe oluşturur). Bu nedenle, Top noktası yığından çıkarılır. Bu kontrol, yığındaki noktalarla mevcut nokta sola dönüş yapana kadar veya yığında ikiden az nokta kalana kadar tekrarlanır. Ardından mevcut nokta yığına eklenir.
+    *   Bu işlem, sıralanmış tüm noktalar işlenene kadar devam eder.
+
+4.  **Sonuç:**
+    Tüm noktalar işlendikten sonra, yığında kalan noktalar konveks zarın köşe noktalarını saat yönünün tersine sıralı bir şekilde temsil eder.
+
+### Örnek Bir Senaryo (Görselleştirme olmadan açıklama):
+
+Elimizde P0, P1, P2, P3, P4, P5 gibi noktalar olduğunu varsayalım.
+
+1.  **Pivot Seçimi:** En düşük Y koordinatına sahip olan P0 noktasını pivot olarak seçelim.
+2.  **Sıralama:** Diğer noktaları P0'a göre polar açılarına göre sıralayalım: P1, P2, P3, P4, P5 (saat yönünün tersine).
+3.  **Yığın İşlemi:**
+    *   Yığına P0 ve P1'i ekle. Yığın: [P0, P1]
+    *   Sıradaki nokta P2. P0-P1-P2 sola dönüş mü? Evet ise, P2'yi yığına ekle. Yığın: [P0, P1, P2]
+    *   Sıradaki nokta P3. P1-P2-P3 sola dönüş mü? Diyelim ki hayır, sağa dönüş (P2 içbükey bir nokta oluşturuyor). P2'yi yığından çıkar. Yığın: [P0, P1]. Şimdi P0-P1-P3 sola dönüş mü? Evet ise, P3'ü yığına ekle. Yığın: [P0, P1, P3]
+    *   Bu şekilde tüm noktalar işlenene kadar devam edilir.
+
+Sonuçta yığında kalan noktalar konveks zarın köşelerini oluşturur.
+
+### Ne Zaman ve Neden Kullanılır?
+
+Graham Scan algoritması, bir dizi noktanın dış sınırlarını belirlemek gerektiğinde kullanışlıdır. Özellikle nokta sayısı çok büyük olmadığında ve verimli bir çözüm arandığında tercih edilebilir. Hesaplamalı geometride temel bir algoritma olup, daha karmaşık geometrik problemlerin çözümünde bir alt adım olarak da kullanılabilir.
+
+### Zaman ve Uzay Karmaşıklığı
+
+*   **Zaman Karmaşıklığı:**
+    *   Pivot noktasını bulma: $O(N)$ (N, nokta sayısı)
+    *   Noktaları polar açılarına göre sıralama: Genellikle $O(N \log N)$ (iyi bir sıralama algoritması kullanıldığında).
+    *   Yığın işlemleri: Her nokta en fazla iki kez yığına eklenip çıkarılır (bir kez eklenir, bir kez çıkarılır). Bu nedenle, yığın işlemleri $O(N)$ sürer.
+    Genel zaman karmaşıklığı, sıralama adımının baskın olması nedeniyle **$O(N \log N)$** olur.
+
+*   **Uzay Karmaşıklığı:**
+    Algoritma, noktaları saklamak için bir yığın kullanır. En kötü durumda, tüm noktalar konveks zarın üzerinde olabilir ve bu durumda yığının boyutu N olur. Dolayısıyla, uzay karmaşıklığı **$O(N)$**'dir.
+
+### Kullanım Yerlerine Örnekler
+
+Graham Scan algoritmasının (ve genel olarak konveks zar algoritmalarının) çeşitli pratik uygulamaları vardır:
+
+1.  **Bilgisayar Grafikleri ve Görüntü İşleme:** Nesne tanıma, şekil analizi ve görüntü sıkıştırma gibi alanlarda kullanılır. Örneğin, bir görüntüdeki bir nesnenin en dış sınırlarını belirlemek için kullanılabilir.
+2.  **Robotik:** Robotların engellerden kaçınması ve en kısa yolu bulması için yol planlama algoritmalarında kullanılabilir. Bir engelin konveks zarı, robotun kaçınması gereken alanı basitleştirebilir.
+3.  **Coğrafi Bilgi Sistemleri (CBS):** Belirli bir coğrafi alandaki en dıştaki yerleşim yerlerini veya tesisleri bulmak, sınırları belirlemek gibi görevlerde kullanılabilir.
+4.  **Desen Tanıma:** Veri kümesindeki desenleri veya aykırı değerleri tespit etmek için kullanılabilir. Konveks zarın dışındaki noktalar aykırı değerler olarak kabul edilebilir.
+5.  **Oyun Geliştirme:** Karakterlerin veya nesnelerin çarpışma tespiti için kullanılabilir. Bir nesnenin konveks zarı, onun çarpışma sınırlarını temsil edebilir.
+6.  **İstatistik:** Veri noktalarının dağılımını analiz etmek ve en dıştaki değerleri belirlemek için kullanılabilir.
+
+### Avantajları ve Dezavantajları
+
+**Avantajları:**
+
+*   **Verimlilik:** $O(N \log N)$ zaman karmaşıklığı ile nispeten büyük veri kümeleri için bile verimli çalışır.
+*   **Anlaşılırlık:** Algoritmanın temel mantığı ve adımları görece basittir ve anlaşılması kolaydır.
+*   **Geniş Uygulama Alanı:** Yukarıda belirtildiği gibi birçok farklı alanda kullanılabilir.
+
+**Dezavantajları:**
+
+*   **Sıralama Gereksinimi:** Algoritmanın performansı büyük ölçüde sıralama adımına bağlıdır. Noktaların önceden sıralanmış olması veya verimli bir sıralama algoritmasının kullanılması önemlidir.
+*   **Sayısal Hassasiyet Sorunları:** Polar açıların hesaplanması ve karşılaştırılması, özellikle kayan nokta sayıları kullanıldığında sayısal hassasiyet sorunlarına yol açabilir. Bu, bazı durumlarda yanlış sonuçlara veya hatalara neden olabilir. (Monotone Chain gibi algoritmalar bu açıdan daha robust olabilir).
+*   **Dinamik Değildir:** Nokta kümesi değiştikçe (yeni noktalar eklendiğinde veya mevcut noktalar çıkarıldığında) konveks zarın yeniden hesaplanması gerekir. Artımlı (incremental) konveks zar algoritmaları bu tür senaryolar için daha uygun olabilir.
+*   **Yüksek Boyutlarda Karmaşıklık:** Graham Scan, temel olarak 2D düzlem için tasarlanmıştır. Daha yüksek boyutlarda (3D veya daha fazla) konveks zar bulmak için farklı ve daha karmaşık algoritmalar gerekir ve Graham Scan'in doğrudan uyarlanması pratik olmayabilir.
+
+
+
+
+
+## Graham Scan Algoritması İçin Ek Kaynakça
+
+Graham Scan algoritması ve konveks zarlar hakkında daha fazla bilgi için aşağıdaki kaynaklara başvurulabilir:
+
+*   Graham, R. L. (1972). An Efficient Algorithm for Determining the Convex Hull of a Finite Planar Set. *Information Processing Letters*, 1(4), 132-133.
+*   Wikipedia contributors. (2024). Graham scan. In *Wikipedia, The Free Encyclopedia*. Retrieved May 10, 2025, from [https://en.wikipedia.org/wiki/Graham_scan](https://en.wikipedia.org/wiki/Graham_scan)
+*   GeeksforGeeks. (2025, February 15). Convex Hull using Graham Scan. *GeeksforGeeks*. Retrieved May 10, 2025, from [https://www.geeksforgeeks.org/convex-hull-using-graham-scan/](https://www.geeksforgeeks.org/convex-hull-using-graham-scan/)
+*   CP-Algorithms. (2024, October 13). Convex hull construction. *Algorithms for Competitive Programming*. Retrieved May 10, 2025, from [https://cp-algorithms.com/geometry/convex-hull.html](https://cp-algorithms.com/geometry/convex-hull.html)
+*   Akgül, B., & Kutucu, H. (2015). Convex Hull Problemine Genel Bakış: Algoritmalar ve Karmaşıklıkları. *Akademik Bilişim 2015*. [https://ab.org.tr/ab15/kitap/473.pdf](https://ab.org.tr/ab15/kitap/473.pdf) (Bu kaynak genel konveks zar algoritmaları için de geçerlidir.)
 
 
